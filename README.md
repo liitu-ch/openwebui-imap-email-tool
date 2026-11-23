@@ -5,6 +5,7 @@ Access and manage emails via IMAP/SMTP directly from Open WebUI. Search, read, c
 ## Features
 
 ### Reading & Searching
+
 - **List Folders** - View all email folders with message counts and unread stats
 - **Search Emails** - Flexible search with multiple criteria (ALL, UNSEEN, FLAGGED, FROM, SUBJECT, TEXT, SINCE)
 - **Get Email** - Read full email content including headers and body
@@ -12,10 +13,12 @@ Access and manage emails via IMAP/SMTP directly from Open WebUI. Search, read, c
 - **Folder Stats** - Get total and unread message counts for any folder
 
 ### Managing
+
 - **Mark as Read** - Update email read status
 - **Move Email** - Move messages between folders (with automatic fallback to copy+delete)
 
 ### Composing & Sending
+
 - **Create Draft** - Save drafts to the Drafts folder
 - **Send Email** - Send messages immediately via SMTP with CC/BCC support
 - **Reply to Email** - Reply or reply-all with proper threading (In-Reply-To, References headers)
@@ -61,7 +64,7 @@ Access and manage emails via IMAP/SMTP directly from Open WebUI. Search, read, c
 2. Select your newly created "Email Assistant" model from the model dropdown
 3. Start chatting! Try commands like:
    - "Show me my unread emails"
-   - "Search for emails from john@example.com"
+   - "Search for emails from <john@example.com>"
    - "Read the latest email"
 
 ## Configuration
@@ -69,8 +72,9 @@ Access and manage emails via IMAP/SMTP directly from Open WebUI. Search, read, c
 Configure the tool via **Valves** (tool settings):
 
 ### IMAP Settings
+
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `imap_host` | - | IMAP server hostname (e.g., `imap.gmail.com`) |
 | `imap_port` | 993 | IMAP port (993 for SSL, 143 for plain) |
 | `imap_username` | - | Email address / username |
@@ -78,14 +82,25 @@ Configure the tool via **Valves** (tool settings):
 | `use_ssl` | true | Use SSL/TLS connection |
 
 ### SMTP Settings
+
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `smtp_host` | - | SMTP server (auto-derived from IMAP if empty) |
 | `smtp_port` | 587 | SMTP port (587 for STARTTLS, 465 for SSL) |
 | `smtp_use_tls` | true | Use STARTTLS (port 587) |
 | `smtp_use_ssl` | false | Use SSL (port 465, overrides TLS) |
+| `smtp_use_imap_credentials` | false | Fallback to IMAP password for SMTP auth if SMTP password not set |
+| `smtp_starttls` | false | Use STARTTLS (port 587) when not using SSL |
+
+### Advanced Settings
+
+| Setting | Default | Description |
+| --------- | --------- | ------------- |
+| `accept_self_signed_certificates` | false | Allow unverified TLS certificates for IMAP and SMTP |
+| `timeout` | 30 | Connection timeout in seconds (1-300) |
 
 ### Sender Settings
+
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `sender_name` | - | Display name for sent emails (e.g., "John Doe") |
@@ -93,6 +108,7 @@ Configure the tool via **Valves** (tool settings):
 ### Example Configurations
 
 **Gmail:**
+
 ```
 imap_host: imap.gmail.com
 imap_port: 993
@@ -100,9 +116,11 @@ smtp_host: smtp.gmail.com
 smtp_port: 587
 smtp_use_tls: true
 ```
+
 > Note: Gmail requires an [App Password](https://support.google.com/accounts/answer/185833)
 
 **Microsoft 365 / Outlook:**
+
 ```
 imap_host: outlook.office365.com
 imap_port: 993
@@ -125,7 +143,7 @@ See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English**
 ## Available Functions
 
 | Function | Parameters | Description |
-|----------|------------|-------------|
+| ---------- | ------------ | ------------- |
 | `list_folders()` | - | List all folders with message counts |
 | `search_emails()` | `query`, `folder`, `limit` | Search emails |
 | `get_email()` | `uid`, `folder` | Get full email content |
@@ -140,7 +158,7 @@ See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English**
 ### Search Query Syntax
 
 | Query | Description |
-|-------|-------------|
+| ------- | ------------- |
 | `ALL` | All emails |
 | `UNSEEN` | Unread emails |
 | `FLAGGED` | Flagged/starred emails |
@@ -149,19 +167,90 @@ See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English**
 | `TEXT:content` | Full-text search |
 | `SINCE:date` | Emails since date |
 
+## Test Environment Setup
+
+For developers wanting to run the regression tests:
+
+### Prerequisites
+
+- Python 3.11+
+- `uv` package manager (or pip)
+
+### Setup Steps
+
+```bash
+# 1. Clone/repo the project
+git clone <repository-url>
+cd openwebui-imap-email-tool
+
+# 2. Create virtual environment with uv
+uv venv --python 3.11
+source .venv/bin/activate
+
+# 3. Install dependencies
+uv pip install imapclient pydantic pytest email-validator
+
+# 4. Run the regression tests
+python -m pytest tests/test_tool.py -v
+```
+
+### Test Coverage
+
+The test suite (`tests/test_tool.py`) covers:
+
+- `EmailAddress` dataclass functionality
+- `_decode_bytes()` helper
+- `_addresses()` helper  
+- `parse_address()` and `parse_address_list()`
+- `_status_value()` with various key types
+- `_json_value()` for bytes/datetime/list/dict handling
+- `_message_body()` for plain text, HTML, and mixed parts
+- Tools class initialization and valve fields
+- Search query validation logic
+- SMTP credential handling
+
+### Portability
+
+The test environment is designed to work across different workspace checkouts. The test file uses `__file__`-relative path resolution:
+
+```python
+test_file_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(test_file_dir)
+sys.path.insert(0, project_root)
+```
+
+This means the tests can be placed anywhere in the project and will automatically find the project root relative to the test file's location.
+
+### Running Specific Tests
+
+```bash
+# Run all tests
+python -m pytest tests/test_tool.py
+
+# Run with verbose output
+python -m pytest tests/test_tool.py -v
+
+# Run with detailed tracebacks
+python -m pytest tests/test_tool.py --tb=long
+```
+
 ## Example Usage
 
 **User:** "Show me my unread emails"
+
 - AI calls `list_unread()` and presents results
 
 **User:** "Read the email from John"
+
 - AI calls `search_emails("FROM:john")` to find UIDs
 - AI calls `get_email(uid)` to fetch content
 
 **User:** "Reply with 'Thanks for the update'"
+
 - AI calls `reply_to_email(uid, "Thanks for the update")`
 
-**User:** "Send an email to team@company.com about the meeting"
+**User:** "Send an email to <team@company.com> about the meeting"
+
 - AI asks for details, creates draft with `create_draft()`
 - Shows draft for confirmation
 - Sends with `send_email()` upon approval
