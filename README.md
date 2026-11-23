@@ -53,7 +53,7 @@ Access and manage emails via IMAP/SMTP directly from Open WebUI. Search, read, c
 3. Configure the model:
    - **Name**: Give it a descriptive name (e.g., "Email Assistant")
    - **Base Model**: Select your preferred LLM (GPT-4, Claude, Llama, etc.)
-   - **System Prompt**: Copy and paste the system prompt from [system_prompt.md](system_prompt.md)
+   - **System Prompt**: Copy and paste the system prompt from [system_prompt_en.md](system_prompt_en.md) for English or [system_prompt_de.md](system_prompt_de.md) for German
      - Use the **English** or **German** version depending on your preference
    - **Tools**: Enable the **IMAP Email Tool** by selecting it from the available tools
 4. Click **Save**
@@ -139,7 +139,7 @@ The system prompt teaches the AI how to effectively use the email tool with enha
 - Advanced formatting guidelines
 - New capabilities for better email management
 
-See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English** and **German** that incorporate these enhancements.
+See [system_prompt_en.md](system_prompt_en.md) for the English version or [system_prompt_de.md](system_prompt_de.md) for the German version that incorporate these enhancements.
 
 ## Available Functions
 
