@@ -131,14 +131,15 @@ smtp_use_tls: true
 
 ## System Prompt
 
-The system prompt teaches the AI how to effectively use the email tool. It includes:
+The system prompt teaches the AI how to effectively use the email tool with enhanced functionality. It includes:
 
-- Available functions and their parameters
+- All available functions and their complete parameters
 - Best practices (confirm before sending, use drafts for complex emails)
-- Example workflows for common tasks
-- Formatting guidelines
+- Optimized example workflows for common tasks
+- Advanced formatting guidelines
+- New capabilities for better email management
 
-See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English** and **German**.
+See [system_prompt.md](system_prompt.md) for ready-to-use prompts in **English** and **German** that incorporate these enhancements.
 
 ## Available Functions
 
