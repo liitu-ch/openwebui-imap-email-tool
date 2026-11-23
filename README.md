@@ -267,6 +267,10 @@ python -m pytest tests/test_tool.py --tb=long
 
 **Sandro Scalco** - [liitu consulting gmbh](https://liitu.ch)
 
+## Contributors
+
+**Patrik Gfeller** - [Code-Omega](https://www.code-omega.ch)
+
 ## License
 
 MIT License
